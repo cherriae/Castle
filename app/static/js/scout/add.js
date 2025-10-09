@@ -268,6 +268,12 @@ document.addEventListener('DOMContentLoaded', function() {
         CanvasField.showStatus('View reset to origin');
     });
 
+    // Flip field button
+    document.getElementById('flipField').addEventListener('click', (e) => {
+        e.preventDefault();
+        CanvasField.toggleFieldFlip();
+    });
+
     // Readonly toggle button
     const readonlyToggle = document.getElementById('readonlyToggle');
     readonlyToggle.addEventListener('click', (e) => {

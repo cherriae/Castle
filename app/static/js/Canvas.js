@@ -80,6 +80,9 @@ class Canvas {
       this.currentThickness = options.initialThickness || 3;
       this.isFilled = false;  // Add fill state
       
+      // Field flip state
+      this.isFieldFlipped = false;
+      
       // Drawing history for undo and save functionality
       this.drawingHistory = [];
       this.redoHistory = [];  // Add redo history
@@ -427,7 +430,16 @@ class Canvas {
       if (this.backgroundLoaded) {
         const x = -this.FIELD_WIDTH / 2;
         const y = -this.FIELD_HEIGHT / 2;
-        this.ctx.drawImage(this.backgroundImage, x, y, this.FIELD_WIDTH, this.FIELD_HEIGHT);
+        
+        // Apply horizontal flip if enabled
+        if (this.isFieldFlipped) {
+          this.ctx.save();
+          this.ctx.scale(-1, 1);
+          this.ctx.drawImage(this.backgroundImage, -x - this.FIELD_WIDTH, y, this.FIELD_WIDTH, this.FIELD_HEIGHT);
+          this.ctx.restore();
+        } else {
+          this.ctx.drawImage(this.backgroundImage, x, y, this.FIELD_WIDTH, this.FIELD_HEIGHT);
+        }
       }
       
       // Draw all strokes from history with length limit
@@ -744,6 +756,13 @@ class Canvas {
         this.redrawCanvas();
         this.showStatus('Fill updated for selection');
       }
+    }
+    
+    toggleFieldFlip() {
+      this.isFieldFlipped = !this.isFieldFlipped;
+      this.redrawCanvas();
+      this.showStatus(`Field ${this.isFieldFlipped ? 'flipped' : 'normal'}`);
+      return this.isFieldFlipped;
     }
     
     setColor(color) {
